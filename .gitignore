@@ -1,0 +1,29 @@
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Java / Maven / Gradle build output
+**/target/
+**/build/
+
+# Node / frontend build output
+**/node_modules/
+**/dist/
+
+# Logs
+**/*.log
+
+# Environment files
+**/.env
+**/.env.*
+!**/.env.example
+
+# Local-only Spring config variants
+**/application-local.properties
+**/application-dev.properties
