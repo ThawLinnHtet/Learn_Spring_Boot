@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Publish parcel status events and watch Kafka process them in real time.">
+	<title>Parcel Pulse | Kafka Event Lab</title>
+	<link rel="stylesheet" href="/styles.css">
+	<script src="/app.js" defer></script>
+</head>
+<body>
+	<header class="site-header">
+		<a class="brand" href="/" aria-label="Parcel Pulse home">
+			<span class="brand-mark" aria-hidden="true">PP</span>
+			<span>
+				<strong>Parcel Pulse</strong>
+				<small>Kafka event lab</small>
+			</span>
+		</a>
+		<div class="connection" role="status" aria-live="polite" title="The dashboard is polling the Spring Boot API">
+			<span class="connection-dot" aria-hidden="true"></span>
+			<span id="connection-label">Connecting</span>
+		</div>
+	</header>
+
+	<main>
+		<section class="intro" aria-labelledby="page-title">
+			<div>
+				<p class="eyebrow">Topic / parcel-events</p>
+				<h1 id="page-title">Watch one parcel<br>become a stream.</h1>
+				<p class="intro-copy">Publish a delivery update, then follow its key through a partition and into the consumer timeline.</p>
+			</div>
+			<div class="metrics" aria-label="Stream statistics">
+				<div class="metric"><strong id="event-count">0</strong><span>Events</span></div>
+				<div class="metric"><strong id="parcel-count">0</strong><span>Parcels</span></div>
+				<div class="metric"><strong id="partition-count">0/3</strong><span>Partitions used</span></div>
+			</div>
+		</section>
+
+		<div class="workspace">
+			<aside class="composer" aria-labelledby="composer-title">
+				<div class="panel-heading">
+					<span class="panel-number">01</span>
+					<div><p>Producer</p><h2 id="composer-title">Publish an event</h2></div>
+				</div>
+
+				<form id="event-form">
+					<label for="tracking-id">Tracking ID</label>
+					<input id="tracking-id" name="trackingId" value="TRK-101" required maxlength="40" autocomplete="off">
+
+					<label for="parcel-status">Parcel status</label>
+					<select id="parcel-status" name="status">
+						<option value="CREATED">Created</option>
+						<option value="PICKED_UP">Picked up</option>
+						<option value="IN_TRANSIT" selected>In transit</option>
+						<option value="OUT_FOR_DELIVERY">Out for delivery</option>
+						<option value="DELIVERED">Delivered</option>
+					</select>
+
+					<label for="location">Current location</label>
+					<input id="location" name="location" value="Yangon Hub" required maxlength="80" autocomplete="off">
+
+					<button id="publish-button" type="submit">
+						<span>Publish to Kafka</span><span aria-hidden="true">-&gt;</span>
+					</button>
+					<p class="form-message" id="form-message" role="status" aria-live="polite">Ready to send.</p>
+				</form>
+
+				<div class="key-note">
+					<span class="key-icon" aria-hidden="true">KEY</span>
+					<p><strong>Why the tracking ID?</strong> Kafka hashes this key so every update for one parcel stays ordered in the same partition.</p>
+				</div>
+			</aside>
+
+			<section class="stream-panel" aria-labelledby="stream-title">
+				<div class="stream-header">
+					<div class="panel-heading">
+						<span class="panel-number">02</span>
+						<div><p>Consumer group / parcel-pulse-dashboard</p><h2 id="stream-title">Consumed timeline</h2></div>
+					</div>
+					<div class="partition-legend" aria-label="Available partitions">
+						<span>P0</span><span>P1</span><span>P2</span>
+					</div>
+				</div>
+
+				<div class="event-list" id="event-list" aria-live="polite" aria-busy="true">
+					<div class="empty-state">
+						<div class="empty-route" aria-hidden="true"><i></i><i></i><i></i></div>
+						<h3>Waiting for the first event</h3>
+						<p>Use the producer panel to put a parcel update onto the topic.</p>
+					</div>
+				</div>
+			</section>
+		</div>
+
+		<section class="route-explainer" aria-label="Kafka event route">
+			<div><span>1</span><p><strong>REST producer</strong> accepts your status update</p></div>
+			<i aria-hidden="true"></i>
+			<div><span>2</span><p><strong>Kafka topic</strong> assigns the keyed event</p></div>
+			<i aria-hidden="true"></i>
+			<div><span>3</span><p><strong>Consumer</strong> records partition and offset</p></div>
+		</section>
+	</main>
+
+	<footer>
+		<span>Parcel Pulse / learning build</span>
+		<span>Spring Boot + Apache Kafka</span>
+	</footer>
+</body>
+</html>
